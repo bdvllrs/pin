@@ -7,7 +7,7 @@ Create a new Python Project
 Clone the repository then install the pin package.
 
 ```
-pip install --user -e .
+pip install --upgrade git+https://github.com/bdvllrs/pin.git
 ```
 
 ## Use
