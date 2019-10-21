@@ -95,3 +95,5 @@ if __name__ == "__main__":
     build_config(base_path, preferences)
     build_builds(base_path, preferences)
     build_setup(base_path, preferences)
+
+    print(f"Project successfully created in {base_path}")
