@@ -1,11 +1,19 @@
 import os
 import argparse
 import shutil
+import sys
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parents[0]
 
 possible_commands = ["create", "add_script"]
+
+
+def exit():
+    try:
+        sys.exit(0)
+    except SystemExit:
+        os._exit(0)
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -21,6 +29,8 @@ def copytree(src, dst, symlinks=False, ignore=None):
 def get_arguments():
     parser = argparse.ArgumentParser(description="Generate a new project structure.")
     parser.add_argument("command", help=f"Command to use. Among {', '.join(possible_commands)}.")
+    parser.add_argument("--name", "-n", default=None, help=f"Name to use.")
+    parser.add_argument("--template", "-t", default="script.tpl", help=f"Script template file to use.")
 
     return parser.parse_args()
 
@@ -76,13 +86,8 @@ def build_builds(base_path, preferences):
 
 
 def build_setup(base_path, preferences):
-    setup_content = f"""from setuptools import find_packages, setup
+    setup_content = load_template("setup.tpl", NAME=preferences['name'], VERSION=preferences['version'])
 
-setup(name='{preferences['name']}',
-      version='{preferences['version']}',
-      install_requires=[],
-      packages=find_packages())\n
-"""
     with open(base_path / "setup.py", "w") as setup_file:
         setup_file.write(setup_content)
     os.mkdir(base_path / preferences['name'])
@@ -91,15 +96,27 @@ setup(name='{preferences['name']}',
 def build_base_lib(base_path, preferences):
     os.mkdir(base_path / preferences['lib_name'])
     os.mkdir(base_path / preferences['lib_name'] / "utils")
-    constants_content = f"""from pathlib import Path
+    constants_content = load_template("constants.py")
 
-PROJECT_DIR = Path(__file__).resolve().parents[2]
-"""
     with open(base_path / preferences['name'] / "utils/constants.py", "w") as constants_file:
         constants_file.write(constants_content)
 
 
+def splash_screen():
+    print(""" _______  _____  ____  _____  
+|_   __ \|_   _||_   \|_   _| 
+  | |__) | | |    |   \ | |   
+  |  ___/  | |    | |\ \| |   
+ _| |_    _| |_  _| |_\   |_  
+|_____|  |_____||_____|\____| \n""")
+    print("Project Initializer.")
+
+
 def script_create_project(args):
+    splash_screen()
+
+    print("Answer some question to personalize your project...")
+
     preferences = get_preferences()
 
     base_path = Path(os.getcwd()) / preferences['lib_name']
@@ -114,47 +131,69 @@ def script_create_project(args):
     print(f"Project successfully created in {base_path}")
 
 
+def load_template(template_name, **vars):
+    base_path = Path(os.getcwd())
+    template_file_path = PROJECT_DIR / "templates" / template_name
+    if (base_path / template_name).exists():
+        template_file_path = base_path / template_name
+    elif Path(template_name).exists():
+        template_file_path = Path(template_name)
+    elif not template_file_path.exists():
+        print("Template file not found.")
+        exit()
+
+    with open(template_file_path, "r") as template_file:
+        template_content = template_file.read()
+    for var, value in vars.items():
+        template_content = template_content.replace(f"%{var}%", value)
+    return template_content
+
+
 def script_add_script(args):
+    """
+    Add a new script.
+    """
     base_path = Path(os.getcwd())
     project_name = str(base_path).split('/')[-1]
     project_name = get_prompt("Project name", project_name)
     script_name = get_prompt("Script name", "main")
     script_folder = get_prompt("Script folder", "scripts")
 
-    script_content = f"""from pin.experiments import control_randomness, set_cuda_device
-from pin.sacred import init_and_get_experiment
-from {project_name}.utils.constants import PROJECT_DIR
+    script_content = load_template(args.template,
+                                   PROJECT_NAME=project_name,
+                                   SCRIPT_NAME=script_name)
 
-ex = init_and_get_experiment(exp_name="{script_name}",
-                             project_directory=PROJECT_DIR,
-                             configs=["main.yaml"])
-
-
-@ex.automain
-def {script_name}(_run, _seed, _log, cuda, cuda_device):
-    # Set randomness
-    control_randomness(_seed)
-    # Set available cuda devices to use
-    set_cuda_device(cuda_device)
-
-    device = torch.device('cpu')
-    if cuda and torch.cuda.is_available():
-        print("Using CUDA.")
-        device = torch.device('cuda') 
-    
-    # TODO
-"""
     with open(base_path / script_folder / (script_name + ".py"), 'w') as script_file:
         script_file.write(script_content)
     print(f"Script {script_name} successfully created.")
 
 
-if __name__ == "__main__":
-    args = get_arguments()
-
+def execute_script(args):
+    """
+    Start the correct script.
+    """
     if args.command == "create":
         script_create_project(args)
     elif args.command == "add_script":
         script_add_script(args)
     else:
         print(f"Command incorrect. Choose among {', '.join(possible_commands)}.")
+
+
+def clean_script(args):
+    """
+    Called when script is cancelled.
+    """
+    pass
+
+
+if __name__ == "__main__":
+    args = get_arguments()
+
+    try:
+        execute_script(args)
+    except KeyboardInterrupt:
+        clean_script(args)
+
+        print('\nCancelled.')
+        exit()

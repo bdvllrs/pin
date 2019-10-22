@@ -1,0 +1,3 @@
+# Only used if the PIN_DEBUG environment variable is provided.
+# Overrides all the loaded values
+debug: true

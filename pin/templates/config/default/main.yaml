@@ -1,0 +1,5 @@
+debug: false
+
+cuda: true  # whether to use gpu acceleration
+cuda_device: 1  # cuda device to use
+

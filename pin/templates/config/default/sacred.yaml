@@ -1,0 +1,11 @@
+sacred:
+  observer: file_storage  # mongodb or file_storage
+
+  # Use the mongodb observer. Useful when access to a database server
+  mongodb:
+    url: 127.0.0.1:27017  # url of the mongodb server
+    db_name: sacred_dbname  # name of the sacred database
+
+  # Otherwise use the file storage and save on disk
+  file_storage:
+    path: /path/to/builds  # absolute path to where to save
