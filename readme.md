@@ -1,6 +1,15 @@
-# PIN
+```
+ _______  _____  ____  _____  
+|_   __ \|_   _||_   \|_   _| 
+  | |__) | | |    |   \ | |   
+  |  ___/  | |    | |\ \| |   
+ _| |_    _| |_  _| |_\   |_  
+|_____|  |_____||_____|\____| 
 
-Create a new Python Project
+Project INitializer.
+```
+
+CLI to automate create of projects and scripts.
 
 ## Installation
 
@@ -10,19 +19,20 @@ Clone the repository then install the pin package.
 pip install --upgrade git+https://github.com/bdvllrs/pin.git
 ```
 
-## Use
+## Use the CLI
 
 ### Create new project
 
 Go to the folder to build the project and execute
 ``` 
-python -m pin create
+pin create PROJECT_NAME
 ```
 
 A new project with the structure 
 ```
-project_name/
-    project_name/
+PROJECT_NAME/
+    PROJECT_NAME/
+        ...
     config/
     builds/
     setup.py
@@ -32,5 +42,10 @@ will be created.
 
 ### Add a new script
 ```
-python -m pin add_script
+pin add script SCRIPT_NAME
 ```
+
+## Some utils
+
+In `pin/sacred/utils.py`. Documentation coming...
+
