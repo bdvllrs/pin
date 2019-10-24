@@ -16,7 +16,7 @@ CLI to automate create of projects and scripts.
 Clone the repository then install the pin package.
 
 ```
-pip install --upgrade git+https://github.com/bdvllrs/pin.git
+pip install --upgrade git+https://github.com/bdvllrs/pin.git@v0.0.2
 ```
 
 ## Use the CLI
@@ -59,8 +59,6 @@ They are python files with `.tpl` extension. You can access to the meta variable
 You can unse them by using `%SCRIPT_NAME%` in the file.
 
 ## Some utils
-
-In `pin/sacred/utils.py`.
 
 ### Constants
 ```python
