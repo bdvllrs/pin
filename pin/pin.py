@@ -2,7 +2,9 @@ import os
 import click
 from pathlib import Path
 
+from pin.utils import copytree
 from pin.utils import load_template, find_root_folder
+from pin.utils import PROJECT_DIR
 
 
 def splash_screen():
@@ -57,14 +59,14 @@ def create(name, version):
     click.echo(f"Project successfully created in {base_path}")
 
 
-@cli.group("add", help="Add new resources (scripts).")
-def add_group():
+@cli.group("script", help="Manage scripts.")
+def script_group():
     pass
 
 
-@add_group.command("script", help="Add a new script.")
+@script_group.command("add", help="Add a new script.")
 @click.argument("script_name")
-@click.option("--template", "-p", default="script.tpl", help="Template file to use.")
+@click.option("--template", "-t", default="default", help="Template file to use.")
 def add_script(script_name, template):
     base_path = find_root_folder(Path(os.getcwd()))
     if not base_path:

@@ -1,3 +1,4 @@
+import torch
 from pin.experiments import control_randomness, set_cuda_device
 from pin.sacred import init_and_get_experiment
 from %PROJECT_NAME%.utils.constants import PROJECT_DIR

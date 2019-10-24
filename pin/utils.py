@@ -2,6 +2,8 @@ import os
 import shutil
 from pathlib import Path
 
+import click
+
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -15,14 +17,16 @@ def copytree(src, dst, symlinks=False, ignore=None):
 
 def load_template(template_name, **vars):
     base_path = Path(os.getcwd())
-    template_file_path = PROJECT_DIR / "templates" / template_name
+    if template_name[-4:] != ".tpl":
+        template_name += ".tpl"
+    template_file_path = PROJECT_DIR / "templates/scripts" / template_name
+
     if (base_path / template_name).exists():
         template_file_path = base_path / template_name
     elif Path(template_name).exists():
         template_file_path = Path(template_name)
     elif not template_file_path.exists():
-        print("Template file not found.")
-        exit()
+        raise click.ClickException("Template file not found.")
 
     with open(template_file_path, "r") as template_file:
         template_content = template_file.read()
