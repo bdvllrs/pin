@@ -108,7 +108,7 @@ def munchify(function):
                 new_kwargs[key] = Munch.fromDict(item)
             else:
                 new_kwargs[key] = item
-        return function(*params, **kwargs)
+        function(*params, **kwargs)
 
     sig = inspect.signature(function)
     sig = sig.replace(parameters=tuple(sig.parameters.values()))
