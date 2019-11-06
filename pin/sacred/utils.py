@@ -6,10 +6,14 @@ from ..constants import DEBUG
 from pathlib import Path
 
 import yaml
+from sacred.config.custom_containers import ReadOnlyDict
 from sacred import Experiment, SETTINGS
 from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 from sacred.utils import apply_backspaces_and_linefeeds
+
+
+dict_types = [dict, ReadOnlyDict]
 
 
 def add_dir_sources(experiment, path, allowed_exts=None):
@@ -99,12 +103,12 @@ def munchify(function):
         new_params = []
         new_kwargs = dict()
         for param in params:
-            if type(param) is dict:
+            if type(param) in dict_types:
                 new_params.append(Munch.fromDict(param))
             else:
                 new_params.append(param)
         for key, item in kwargs.items():
-            if type(item) is dict:
+            if type(item) in dict_types:
                 new_kwargs[key] = Munch.fromDict(item)
             else:
                 new_kwargs[key] = item
