@@ -1,5 +1,5 @@
 import torch
-from pin.experiments import control_randomness, set_cuda_device
+from pin.experiments import control_randomness
 from pin.sacred import init_and_get_experiment
 from %PROJECT_NAME%.utils.constants import PROJECT_DIR
 
@@ -9,11 +9,9 @@ ex = init_and_get_experiment(exp_name="%SCRIPT_NAME%",
 
 
 @ex.automain
-def %SCRIPT_NAME%(_run, _seed, _log, cuda, cuda_device):
+def %SCRIPT_NAME%(_run, _seed, _log, cuda):
     # Set randomness
     control_randomness(_seed)
-    # Set available cuda devices to use
-    set_cuda_device(cuda_device)
 
     device = torch.device('cpu')
     if cuda and torch.cuda.is_available():
