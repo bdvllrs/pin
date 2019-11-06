@@ -1,3 +1,7 @@
+import inspect
+
+from munch import Munch
+
 from ..constants import DEBUG
 from pathlib import Path
 
@@ -88,3 +92,26 @@ def init_and_get_experiment(exp_name, project_directory, ingredients=None,
     if debug_mode:
         ex.add_config(get_config(project_directory / "config", "debug.yaml"))
     return ex
+
+
+def munchify(function):
+    def wrapper(*params, **kwargs):
+        new_params = []
+        new_kwargs = dict()
+        for param in params:
+            if type(param) is dict:
+                new_params.append(Munch.fromDict(param))
+            else:
+                new_params.append(param)
+        for key, item in kwargs.items():
+            if type(item) is dict:
+                new_kwargs[key] = Munch.fromDict(item)
+            else:
+                new_kwargs[key] = item
+        return function(*params, **kwargs)
+
+    sig = inspect.signature(function)
+    sig = sig.replace(parameters=tuple(sig.parameters.values()))
+    wrapper.__signature__ = sig
+
+    return wrapper
