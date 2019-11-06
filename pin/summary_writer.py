@@ -108,5 +108,5 @@ class Metrics:
         if self.writer is not None:
             for key in self.metrics.keys():
                 if len(self.metrics[key]):
-                    self.writer.add(key, self.metrics[key][-1])
+                    self.writer.add(self.prefix + key, self.metrics[key][-1])
 
