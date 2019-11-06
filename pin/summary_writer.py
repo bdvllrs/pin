@@ -52,10 +52,13 @@ class SummaryWriter:
 
 
 class Metrics:
-    def __init__(self, print_every=50, first_epoch=0):
+    def __init__(self, writer=None, print_every=50, first_epoch=0, prefix=None):
+        self.writer = writer
+
         self.metrics = dict()
         self.buffer = dict()
         self.running_avg = dict()
+        self.prefix = "" if prefix is None else prefix + " "
 
         self.current_step = 0
         self.epoch = first_epoch
@@ -77,9 +80,12 @@ class Metrics:
         self.current_step = 0
         self.epoch += 1
 
-    def step(self, content_dict):
+    def step(self, content_dict=None):
+        if content_dict is None:
+            content_dict = dict()
         for key, value in content_dict.items():
             self.add(key, value)
+
         self.current_step += 1
 
         if not self.current_step % self.print_every:
@@ -94,6 +100,13 @@ class Metrics:
             self.buffer[key] = []
 
     def print(self):
-        msg = f"[Epoch {self.epoch}] [Step {self.current_step}]: "
-        msg += ", ".join([f"{key}: {value:0.3f}" for key, value in self.running_avg.items()])
+        msg = f"{self.prefix}[Epoch {self.epoch}] [Step {self.current_step}]: "
+        msg += ", ".join([f"{key}: {self.metrics[key][-1]:0.3f} ({self.running_avg[key]:0.3f})"
+                          for key in self.running_avg.keys()])
         print(msg)
+
+        if self.writer is not None:
+            for key in self.metrics.keys():
+                if len(self.metrics[key]):
+                    self.writer.add(key, self.metrics[key][-1])
+
