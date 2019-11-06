@@ -94,14 +94,14 @@ class Metrics:
 
     def compute_average(self):
         for key, values in self.buffer.items():
-            self.metrics[key] += values
+            self.metrics[key] = values
             average = np.mean(values)
             self.running_avg[key].append(average)
             self.buffer[key] = []
 
     def print(self):
         msg = f"{self.prefix}[Epoch {self.epoch}] [Step {self.current_step}]: "
-        msg += ", ".join([f"{key}: {self.metrics[key][-1]:0.3f} ({self.running_avg[key]:0.3f})"
+        msg += ", ".join([f"{key}: {self.metrics[key][-1]:0.3f} ({self.running_avg[key][-1]:0.3f})"
                           for key in self.running_avg.keys()])
         print(msg)
 
