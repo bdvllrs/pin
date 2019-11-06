@@ -58,6 +58,7 @@ class Metrics:
         self.metrics = dict()
         self.buffer = dict()
         self.running_avg = dict()
+        self.raw_prefix = "" if prefix is None else prefix
         self.prefix = "" if prefix is None else prefix + " "
 
         self.current_step = 0
@@ -108,5 +109,5 @@ class Metrics:
         if self.writer is not None:
             for key in self.metrics.keys():
                 if len(self.metrics[key]):
-                    self.writer.add_scalar(self.prefix + key, self.metrics[key][-1])
+                    self.writer.add_scalar(self.raw_prefix + "_" + key, self.metrics[key][-1])
 
