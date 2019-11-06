@@ -113,5 +113,6 @@ def munchify(function):
     sig = inspect.signature(function)
     sig = sig.replace(parameters=tuple(sig.parameters.values()))
     wrapper.__signature__ = sig
+    wrapper.__module__ = function.__module__
 
     return wrapper
