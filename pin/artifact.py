@@ -5,31 +5,43 @@ from pathlib import Path
 path_type = Union[Path, str]
 
 
-class Artifacts:
-    def __init__(self, path: path_type):
+class Artifact:
+    def __init__(self, path: path_type, name: str):
         self.path = path if isinstance(path, Path) else Path(path)
+        self.name = name
         self.version = 1
         self.best_version = None
         self.best_version_value = None
+        self.artifact = None
 
-    def checkpoint(self, name, artifact, metric=None, **kwargs):
+    def update(self, artifact):
+        self.artifact = artifact
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            file_name = self.path / self.name.format(version="recovery")
+            self.save(file_name)
+
+    def checkpoint(self, metric=None, **kwargs):
         """
         Saves a checkpoint to self.path / name
         Args:
             name: name that will be formatted. Can have the value "version".
-            artifact: artifact to save
             metric: a value to inform how good this artifact is (higher is better).
             **kwargs:
 
         Returns:
 
         """
-        file_name = self.path / name.format(version=self.version)
-        self.save(file_name, artifact, **kwargs)
+        file_name = self.path / self.name.format(version=self.version)
+        self.save(file_name, **kwargs)
         self.version += 1
         if self.is_best(metric):
-            file_name = self.path / name.format(version="best")
-            self.save(file_name, artifact, **kwargs)
+            file_name = self.path / self.name.format(version="best")
+            self.save(file_name, **kwargs)
 
     def is_best(self, metric=None):
         """
@@ -47,16 +59,16 @@ class Artifacts:
                 return True
         return False
 
-    def save(self, filename, artifact, **kwargs):
+    def save(self, filename, **kwargs):
         raise NotImplementedError
 
     def load(self, filename, *params, version="best"):
         raise NotImplementedError
 
 
-class TorchModelArtifact(Artifacts):
-    def save(self, filename, model, **kwargs):
-        torch.save(model, filename)
+class TorchModelArtifact(Artifact):
+    def save(self, filename, **kwargs):
+        torch.save(self.artifact, filename)
 
     def load(self, filename, model, version="best"):
         file_name = self.path / filename.format(version=version)
