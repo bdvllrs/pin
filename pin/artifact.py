@@ -70,6 +70,16 @@ class TorchModelArtifact(Artifact):
     def save(self, filename, **kwargs):
         torch.save(self.artifact, filename)
 
-    def load(self, filename, model, version="best"):
+    def load(self, filename, models, version="best"):
         file_name = self.path / filename.format(version=version)
-        model.load_state_dict(torch.load(file_name))
+        loaded_dicts = torch.load(file_name)
+        is_not_dict = type(models) is not dict and type(loaded_dicts) is not dict
+        if is_not_dict:
+            models = dict(default=models)
+            loaded_dicts = dict(default=loaded_dicts)
+        for key, model in models:
+            if key in loaded_dicts.keys():
+                model.load_state_dict(loaded_dicts[key])
+            else:
+                print(f"{key} is not in the checkpoint. Skipping.")
+        return models["default"] if is_not_dict else models

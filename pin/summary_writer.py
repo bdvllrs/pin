@@ -78,6 +78,12 @@ class Metrics:
 
     def new_epoch(self):
         self.compute_average()
+        self.print()
+
+        for key in self.metrics.keys():
+            self.metrics[key] = []
+            self.running_avg[key] = []
+
         self.current_step = 0
         self.epoch += 1
 
@@ -95,9 +101,9 @@ class Metrics:
 
     def compute_average(self):
         for key, values in self.buffer.items():
-            self.metrics[key] = values
             average = np.mean(values)
             self.running_avg[key].append(average)
+            self.metrics[key].append(average)
             self.buffer[key] = []
 
     def print(self):
@@ -110,4 +116,7 @@ class Metrics:
             for key in self.metrics.keys():
                 if len(self.metrics[key]):
                     self.writer.add_scalar(self.raw_prefix + "_" + key, self.metrics[key][-1])
+
+    def __getattr__(self, item):
+        return np.mean(self.metrics[item])
 
