@@ -5,7 +5,7 @@ setup(name='pin',
       py_modules=['pin'],
       install_requires=['sacred', 'Click'],
       packages=find_packages(),
-      package_data={'pin': ['templates/*']},
+      package_data={'pin': ['templates/**']},
       include_package_data=True,
       entry_points="""
       [console_scripts]
