@@ -84,5 +84,12 @@ def add_script(script_name, template):
     click.echo(f"Script {script_name} successfully created.")
 
 
+@script_group.command("templates", help="List all templates.")
+def list_templates():
+    template_path = PROJECT_DIR / "templates/scripts"
+    templates = os.listdir(template_path)
+    click.echo("- " + "\n- ".join(templates))
+
+
 if __name__ == "__main__":
     cli()
