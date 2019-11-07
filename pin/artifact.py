@@ -1,3 +1,5 @@
+import os
+
 import torch
 from typing import Union
 from pathlib import Path
@@ -6,13 +8,16 @@ path_type = Union[Path, str]
 
 
 class Artifact:
-    def __init__(self, path: path_type, name: str):
+    def __init__(self, path: path_type, name: str, num_kept_versions: int = 10):
         self.path = path if isinstance(path, Path) else Path(path)
         self.name = name
         self.version = 1
         self.best_version = None
         self.best_version_value = None
         self.artifact = None
+        self.num_kept_versions = num_kept_versions
+
+        self.saved_versions = dict()
 
     def update(self, artifact):
         self.artifact = artifact
@@ -38,6 +43,8 @@ class Artifact:
         """
         file_name = self.path / self.name.format(version=self.version)
         self.save(file_name, **kwargs)
+        self.saved_versions[self.version] = file_name
+        self.clean()
         self.version += 1
         if self.is_best(metric):
             file_name = self.path / self.name.format(version="best")
@@ -64,6 +71,12 @@ class Artifact:
 
     def load(self, filename, *params, version="best"):
         raise NotImplementedError
+
+    def clean(self):
+        to_remove = sorted(self.saved_versions.keys())[:len(self.saved_versions.keys()) - self.num_kept_versions]
+        for index in to_remove:
+            os.remove(self.saved_versions[index])
+            del self.saved_versions[index]
 
 
 class TorchModelArtifact(Artifact):
