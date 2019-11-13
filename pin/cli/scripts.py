@@ -30,7 +30,7 @@ def add_script(script_name, template):
         raise click.ClickException("There are no scripts folder.")
     project_name = str(base_path).split('/')[-1]
 
-    script_content = load_template(template,
+    script_content = load_template("scripts/" + template,
                                    PROJECT_NAME=project_name,
                                    SCRIPT_NAME=script_name)
 
