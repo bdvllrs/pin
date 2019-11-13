@@ -48,7 +48,7 @@ def find_root_folder(base_path):
 def find_and_get_sacred_conf(base_path):
     root_folder = find_root_folder(base_path)
     if root_folder:
-        return get_sacred_conf(root_folder / "config")
+        return get_sacred_conf(root_folder)
     return None
 
 
