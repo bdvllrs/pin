@@ -9,5 +9,5 @@ setup(name='pin',
       include_package_data=True,
       entry_points="""
       [console_scripts]
-      pin=pin.pin:cli
+      pin=pin.cli.main:cli
       """)

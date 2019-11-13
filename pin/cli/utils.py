@@ -4,7 +4,7 @@ from pathlib import Path
 
 import click
 
-from .sacred.utils import get_sacred_conf
+from pin.sacred.utils import get_sacred_conf
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -53,3 +53,15 @@ def find_and_get_sacred_conf(base_path):
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[0]
+
+
+def splash_screen():
+    return """ _______  _____  ____  _____  
+|_   __ \|_   _||_   \|_   _| 
+  | |__) | | |    |   \ | |   
+  |  ___/  | |    | |\ \| |   
+ _| |_    _| |_  _| |_\   |_  
+|_____|  |_____||_____|\____| 
+
+Project INitializer.
+"""
