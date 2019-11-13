@@ -19,7 +19,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 
 def load_template(template_name, **vars):
     base_path = Path(os.getcwd())
-    if "." not in template_name:
+    if template_name[-4:] != ".tpl":
         template_name += ".tpl"
     template_file_path = PROJECT_DIR / "templates" / template_name
 

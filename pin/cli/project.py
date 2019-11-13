@@ -54,10 +54,9 @@ def create(name, version):
     os.mkdir(base_path / lib_name)
     os.mkdir(base_path / lib_name / "utils")
 
-    with open(PROJECT_DIR / "templates/constants.py", "r") as f:
-        constants_content = f.read()
+    constants_content = load_template("constants.tpl")
 
     with open(base_path / name / "utils/constants.py", "w") as constants_file:
         constants_file.write(constants_content)
 
-    click.echo(f"Project successfully created in {base_path}")
+    click.echo(f"Project successfully created in {base_path}.")
