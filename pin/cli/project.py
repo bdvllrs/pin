@@ -53,7 +53,9 @@ def create(name, version):
     # create base lib
     os.mkdir(base_path / lib_name)
     os.mkdir(base_path / lib_name / "utils")
-    constants_content = load_template("constants.py")
+
+    with open(PROJECT_DIR / "templates/constants.py", "r") as f:
+        constants_content = f.read()
 
     with open(base_path / name / "utils/constants.py", "w") as constants_file:
         constants_file.write(constants_content)
