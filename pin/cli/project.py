@@ -12,7 +12,7 @@ from .utils import PROJECT_DIR
 
 @click.command("create", help="Create a new project.")
 @click.argument("name")
-@click.option("--version", "-v", prompt="Project version", help="Version of the project.")
+@click.option("--version", "-v", default="0.0.1", help="Version of the project.")
 def create(name, version):
     """
     Create a new project.
@@ -22,6 +22,7 @@ def create(name, version):
         $ pin script add SCRIPT_NAME
     """
     click.echo(splash_screen())
+
     lib_name = name.replace("-", "_").replace(" ", "_")
 
     base_path = Path(os.getcwd()) / lib_name
