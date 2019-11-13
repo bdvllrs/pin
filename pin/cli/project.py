@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from shutil import rmtree
 
 import click
 
@@ -24,6 +25,13 @@ def create(name, version):
     lib_name = name.replace("-", "_").replace(" ", "_")
 
     base_path = Path(os.getcwd()) / lib_name
+    if base_path.exists():
+        overwrite_project_confirm = click.confirm(f"Folder {lib_name} already exists."
+                                                  "Do you want to overwrite this project?")
+        if not overwrite_project_confirm:
+            click.echo("Aborted.")
+            return
+        rmtree(base_path)
     os.mkdir(base_path)
 
     # create config
