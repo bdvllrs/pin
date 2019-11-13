@@ -27,7 +27,7 @@ def create(name, version):
 
     base_path = Path(os.getcwd()) / lib_name
     if base_path.exists():
-        overwrite_project_confirm = click.confirm(f"Folder {lib_name} already exists."
+        overwrite_project_confirm = click.confirm(f"Folder {lib_name} already exists. "
                                                   "Do you want to overwrite this project?")
         if not overwrite_project_confirm:
             click.echo("Aborted.")

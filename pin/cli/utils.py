@@ -52,7 +52,7 @@ def find_and_get_sacred_conf(base_path):
     return None
 
 
-PROJECT_DIR = Path(__file__).resolve().parents[0]
+PROJECT_DIR = Path(__file__).resolve().parents[1]
 
 
 def splash_screen():
