@@ -28,7 +28,7 @@ def create(name, version):
     base_path = Path(os.getcwd()) / lib_name
     if base_path.exists():
         overwrite_project_confirm = click.confirm(f"Folder {lib_name} already exists. "
-                                                  "Do you want to overwrite this project?")
+                                                  "Do you want to overwrite it?")
         if not overwrite_project_confirm:
             click.echo("Aborted.")
             return
@@ -48,7 +48,6 @@ def create(name, version):
 
     with open(base_path / "setup.py", "w") as setup_file:
         setup_file.write(setup_content)
-    os.mkdir(base_path / name)
 
     # create base lib
     os.mkdir(base_path / lib_name)
