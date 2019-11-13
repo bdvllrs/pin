@@ -34,6 +34,7 @@ def create(name, version):
             return
         rmtree(base_path)
     os.mkdir(base_path)
+    os.mkdir(base_path / "scripts")
 
     # create config
     os.mkdir(base_path / "config")
