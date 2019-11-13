@@ -1,10 +1,11 @@
 import os
 import click
 from pathlib import Path
+from subprocess import call
 
-from pin.utils import copytree
-from pin.utils import load_template, find_root_folder
-from pin.utils import PROJECT_DIR
+from .utils import copytree
+from .utils import load_template, find_root_folder, find_and_get_sacred_conf
+from .utils import PROJECT_DIR
 
 
 def splash_screen():
@@ -21,13 +22,14 @@ Project INitializer.
 
 @click.group()
 def cli():
-    click.echo(splash_screen())
+    pass
 
 
 @cli.command("create", help="Create a new project.")
 @click.argument("name")
 @click.option("--version", "-v", prompt="Project version", help="Version of the project.")
 def create(name, version):
+    click.echo(splash_screen())
     lib_name = name.replace("-", "_").replace(" ", "_")
 
     base_path = Path(os.getcwd()) / lib_name
@@ -57,6 +59,32 @@ def create(name, version):
         constants_file.write(constants_content)
 
     click.echo(f"Project successfully created in {base_path}")
+
+
+@cli.command("omniboard", help="Start omniboard using the project's sacred information.")
+@click.option("--mongo", "-m", default="localhost:27017", type=str, help="MongoDB connexion information.")
+@click.option("--database", "-d", default=None, help="MongoDB database to use.")
+def omniboard(mongo, database):
+    """
+    Args:
+        mongo:
+        database:
+    Returns:
+
+    """
+    sacred_config = find_and_get_sacred_conf(Path(os.getcwd()))
+    if sacred_config is not None:
+        database_name = sacred_config['sacred']['mongodb']['db_name']
+    elif database is not None:
+        database_name = database
+    else:
+        raise click.ClickException(f"The sacred config file could not be located. Is it really a pin project?")
+
+    try:
+        click.echo(f"> omniboard -m {mongo}:{database_name}")
+        call(["omniboard", "-m", f"{mongo}:{database_name}"])
+    except:
+        raise click.ClickException(f"Could not start omniboard. Is it installed?")
 
 
 @cli.group("script", help="Manage scripts.")

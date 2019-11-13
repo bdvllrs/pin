@@ -4,6 +4,8 @@ from pathlib import Path
 
 import click
 
+from .sacred.utils import get_sacred_conf
+
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -41,6 +43,14 @@ def find_root_folder(base_path):
     if not len(base_path.parents):
         return False
     return find_root_folder(base_path.parent)
+
+
+def find_and_get_sacred_conf(base_path):
+    root_folder = find_root_folder(base_path)
+    if root_folder:
+        return get_sacred_conf(root_folder / "config")
+    return None
+
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[0]
