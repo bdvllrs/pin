@@ -44,10 +44,22 @@ pin script add SCRIPT_NAME [-t TEMPLATE_NAME]
 ```
 
 #### Available templates
+List templates using:
+```
+pin script templates
+```
+
 The default template is `default`.
-Also available: `torch`. 
 
 You can also give a relative or absolute path towards a personal template.
+
+
+### Start omniboard
+```
+pin omniboard
+```
+starts omniboard using the settings defined in the `sacred.yaml` file.
+Works only if omniboard is already installed ([docs](https://vivekratnavel.github.io/omniboard/#/quick-start)).
 
 #### Template semantics
 They are python files with `.tpl` extension. You can access to the meta variables:
@@ -57,6 +69,7 @@ They are python files with `.tpl` extension. You can access to the meta variable
 You can unse them by using `%SCRIPT_NAME%` in the file.
 
 ## Some utils
+Attention. Non exhaustive documentation.
 
 ### Constants
 ```python

@@ -13,6 +13,13 @@ from .utils import PROJECT_DIR
 @click.argument("name")
 @click.option("--version", "-v", prompt="Project version", help="Version of the project.")
 def create(name, version):
+    """
+    Create a new project.
+        $ pin create PROJECT_NAME
+    will generate a new project folder containing boilerplate of the new project.
+    To then add a new script, just type
+        $ pin script add SCRIPT_NAME
+    """
     click.echo(splash_screen())
     lib_name = name.replace("-", "_").replace(" ", "_")
 

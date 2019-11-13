@@ -10,6 +10,11 @@ from pin.cli.utils import PROJECT_DIR
 
 @click.group("script", help="Manage scripts.")
 def script_group():
+    """
+    Base for the script group.
+        $ pin script --help
+    to list all the available commands.
+    """
     pass
 
 
@@ -17,6 +22,9 @@ def script_group():
 @click.argument("script_name")
 @click.option("--template", "-t", default="default", help="Template file to use.")
 def add_script(script_name, template):
+    """
+    Add a new script in the scripts folder according to the given template (defaults to the default template).
+    """
     base_path = find_root_folder(Path(os.getcwd()))
     if not base_path:
         raise click.ClickException("There are no scripts folder.")
@@ -35,6 +43,9 @@ def add_script(script_name, template):
 
 @script_group.command("templates", help="List all templates.")
 def list_templates():
+    """
+    List available templates
+    """
     template_path = PROJECT_DIR / "templates/scripts"
     templates = os.listdir(template_path)
     click.echo("- " + "\n- ".join(templates))

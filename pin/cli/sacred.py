@@ -12,11 +12,7 @@ from pin.cli.utils import find_and_get_sacred_conf
 @click.option("--database", "-d", default=None, help="MongoDB database to use.")
 def omniboard(mongo, database):
     """
-    Args:
-        mongo:
-        database:
-    Returns:
-
+    Starts the omniboard command using the information filled in the sacred.yaml config.
     """
     sacred_config = find_and_get_sacred_conf(Path(os.getcwd()))
     if sacred_config is not None:
@@ -30,4 +26,4 @@ def omniboard(mongo, database):
         click.echo(f"> omniboard -m {mongo}:{database_name}")
         call(["omniboard", "-m", f"{mongo}:{database_name}"])
     except:
-        raise click.ClickException(f"Could not start omniboard. Is it installed?")
+        raise click.ClickException(f"Could not start omniboard. Is it properly configured?")
