@@ -14,7 +14,7 @@ CLI to automate creation of projects and scripts.
 ## Installation
 
 ```
-pip install --upgrade git+https://github.com/bdvllrs/pin.git@v0.0.2
+pip install --upgrade git+https://github.com/bdvllrs/pin.git@v0.0.3
 ```
 
 ## Use the CLI
