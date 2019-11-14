@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(name='pin',
-      version='0.0.4',
+      version='0.0.5',
       py_modules=['pin'],
       install_requires=['sacred', 'Click'],
       packages=find_packages(),

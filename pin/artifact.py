@@ -8,7 +8,18 @@ path_type = Union[Path, str]
 
 
 class Artifact:
+    """"
+    Base class for artifacts.
+    """
     def __init__(self, path: path_type, name: str, num_kept_versions: int = 10):
+        """
+
+        Args:
+            path: base path to save the artifact
+            name: name of the artifact. Must montain the {version} token to update.
+                Example: "model_artifact_{version}.ext"
+            num_kept_versions: Number of kept version of the artifact. Default: 10
+        """
         self.path = path if isinstance(path, Path) else Path(path)
         self.name = name
         self.version = 1
@@ -20,9 +31,20 @@ class Artifact:
         self.saved_versions = dict()
 
     def update(self, artifact):
+        """
+        Update the current artifact.
+        Args:
+            artifact:
+
+        Returns:
+
+        """
         self.artifact = artifact
 
     def __enter__(self):
+        """
+        Use it as a context manager to save the updated artifact if an error occurs.
+        """
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -67,9 +89,27 @@ class Artifact:
         return False
 
     def save(self, filename, **kwargs):
+        """
+        Save the model
+        Args:
+            filename:
+            **kwargs:
+
+        Returns:
+
+        """
         raise NotImplementedError
 
-    def load(self, filename, *params, version="best"):
+    def load(self, *params, version="best"):
+        """
+        Load an artifact
+        Args:
+            *params:
+            version:
+
+        Returns:
+
+        """
         raise NotImplementedError
 
     def clean(self):
@@ -83,8 +123,17 @@ class TorchModelArtifact(Artifact):
     def save(self, filename, **kwargs):
         torch.save(self.artifact, filename)
 
-    def load(self, filename, models, version="best"):
-        file_name = self.path / filename.format(version=version)
+    def load(self, models, version="best"):
+        """
+        Load the artifact
+        Args:
+            models:
+            version:
+
+        Returns:
+
+        """
+        file_name = self.path / self.name.format(version=version)
         loaded_dicts = torch.load(file_name)
         is_not_dict = type(models) is not dict and type(loaded_dicts) is not dict
         if is_not_dict:

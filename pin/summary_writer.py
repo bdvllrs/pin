@@ -6,6 +6,7 @@ class SummaryWriter:
     Logger to log on tensorboard and sacred.
     API follows the tensorboard SummaryWriter API with only a subset of the functions available.
     """
+
     def __init__(self, tensorboard_writer=None, sacred_run=None):
         """
         Args:
@@ -52,7 +53,18 @@ class SummaryWriter:
 
 
 class Metrics:
+    """
+    Handle metrics, computes averages, log in Summary writer and print in console.
+    """
+
     def __init__(self, writer=None, print_every=50, first_epoch=0, prefix=None):
+        """
+        Args:
+            writer: SummaryWriter object if want to log in Tensorboard.
+            print_every: Frequency to write content of metrics.
+            first_epoch:
+            prefix: A prefix to set when logging.
+        """
         self.writer = writer
 
         self.metrics = dict()
@@ -66,6 +78,15 @@ class Metrics:
         self.print_every = print_every
 
     def add(self, key, value):
+        """
+        Add a value in the buffer
+        Args:
+            key:
+            value:
+
+        Returns:
+
+        """
         if key in self.buffer.keys():
             self.buffer[key].append(value)
         else:
@@ -77,6 +98,9 @@ class Metrics:
                 self.running_avg[key] = []
 
     def new_epoch(self):
+        """
+        Starts a new epoch: Computes averages and empty buffers.
+        """
         self.compute_average()
         self.print()
 
@@ -88,6 +112,12 @@ class Metrics:
         self.epoch += 1
 
     def step(self, content_dict=None):
+        """
+        Call step every at the end of every iteration. Will print or log if
+        the step % print_every is 1.
+        Args:
+            content_dict: Some additional metrics to add before logging.
+        """
         if content_dict is None:
             content_dict = dict()
         for key, value in content_dict.items():
