@@ -2,3 +2,4 @@ sacred
 pyyaml
 munch
 pymongo
+numpy
