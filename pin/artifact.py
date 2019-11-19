@@ -127,10 +127,10 @@ class TorchModelArtifact(Artifact):
         """
         Load the artifact
         Args:
-            models:
-            version:
+            models: dict of models. Keys should be the same as the saved keys of the artifacts.
+            version: version to load
 
-        Returns:
+        Returns: dicts of loaded models
 
         """
         file_name = self.path / self.name.format(version=version)
