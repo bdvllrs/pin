@@ -40,7 +40,7 @@ def get_config(root_path, filename):
     if not file.exists():
         file = root_path / "default" / filename
     with open(file, "r") as f:
-        conf = yaml.load(f, Loader=yaml.BaseLoader)
+        conf = yaml.load(f, Loader=yaml.FullLoader)
     return conf
 
 
