@@ -11,7 +11,9 @@ class Artifact:
     """"
     Base class for artifacts.
     """
-    def __init__(self, path: path_type, name: str, num_kept_versions: int = 10):
+    def __init__(self, path: path_type, name: str,
+                 num_kept_versions: int = 10,
+                 debug: bool = False):
         """
 
         Args:
@@ -27,6 +29,7 @@ class Artifact:
         self.best_version_value = None
         self.artifact = None
         self.num_kept_versions = num_kept_versions
+        self.debug = debug
 
         self.saved_versions = dict()
 
@@ -48,7 +51,7 @@ class Artifact:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type is not None:
+        if exc_type is not None and not self.debug:
             file_name = self.path / self.name.format(version="recovery")
             self.save(file_name)
 
@@ -63,14 +66,14 @@ class Artifact:
         Returns:
 
         """
-        file_name = self.path / self.name.format(version=self.version)
-        self.save(file_name, **kwargs)
-        self.saved_versions[self.version] = file_name
-        self.clean()
-        self.version += 1
-        if self.is_best(metric):
-            file_name = self.path / self.name.format(version="best")
+        if not self.debug:
+            file_name = self.path / self.name.format(version=self.version)
             self.save(file_name, **kwargs)
+            self.clean()
+            self.version += 1
+            if self.is_best(metric):
+                file_name = self.path / self.name.format(version="best")
+                self.save(file_name, **kwargs)
 
     def is_best(self, metric=None):
         """
