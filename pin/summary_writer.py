@@ -70,8 +70,7 @@ class Metrics:
         self.metrics = dict()
         self.buffer = dict()
         self.running_avg = dict()
-        self.raw_prefix = "" if prefix is None else prefix
-        self.prefix = "" if prefix is None else prefix + " "
+        self.prefix = "" if prefix is None else prefix
 
         self.current_step = 0
         self.epoch = first_epoch
@@ -94,16 +93,13 @@ class Metrics:
 
         if key not in self.metrics.keys():
             self.metrics[key] = []
-            if key not in self.running_avg.keys():
-                self.running_avg[key] = []
+        if key not in self.running_avg.keys():
+            self.running_avg[key] = []
 
     def new_epoch(self):
         """
         Starts a new epoch: Computes averages and empty buffers.
         """
-        self.compute_average()
-        self.print()
-
         for key in self.metrics.keys():
             self.metrics[key] = []
             self.running_avg[key] = []
@@ -133,11 +129,11 @@ class Metrics:
         for key, values in self.buffer.items():
             average = np.mean(values)
             self.running_avg[key].append(average)
-            self.metrics[key].append(average)
+            self.metrics[key].extend(values)
             self.buffer[key] = []
 
     def print(self):
-        msg = f"{self.prefix}[Epoch {self.epoch}] [Step {self.current_step}]: "
+        msg = f"{self.prefix} [Epoch {self.epoch}] [Step {self.current_step}]: "
         msg += ", ".join([f"{key}: {self.metrics[key][-1]:0.3f} ({self.running_avg[key][-1]:0.3f})"
                           for key in self.running_avg.keys()])
         print(msg)
@@ -145,7 +141,7 @@ class Metrics:
         if self.writer is not None:
             for key in self.metrics.keys():
                 if len(self.metrics[key]):
-                    self.writer.add_scalar(self.raw_prefix + "_" + key, self.metrics[key][-1])
+                    self.writer.add_scalar(self.prefix + "_" + key, self.metrics[key][-1])
 
     def __getattr__(self, item):
         return np.mean(self.metrics[item])
