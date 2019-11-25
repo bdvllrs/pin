@@ -142,7 +142,7 @@ class TorchModelArtifact(Artifact):
         if is_not_dict:
             models = dict(default=models)
             loaded_dicts = dict(default=loaded_dicts)
-        for key, model in models:
+        for key, model in models.items():
             if key in loaded_dicts.keys():
                 model.load_state_dict(loaded_dicts[key])
             else:
