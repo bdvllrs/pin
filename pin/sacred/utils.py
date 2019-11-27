@@ -70,6 +70,8 @@ def init_and_get_experiment(exp_name, project_directory, ingredients=None,
     ingredients = ingredients if ingredients is not None else []
     ex = Experiment(exp_name, ingredients=ingredients, interactive=interactive)
 
+    add_dir_sources(ex, project_directory)
+
     sacred_conf = get_sacred_conf(project_directory)
     if sacred_conf is None:
         print("The sacred.yaml file is not configured. Using debug mode.")
