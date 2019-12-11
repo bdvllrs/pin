@@ -31,7 +31,7 @@ def control_randomness(seed):
     # TENSORFLOW 1
     try:
         import tensorflow as tf
-        tf.set_random_seed(seed)
+        tf.compat.v1.set_random_seed(seed)
     except:
         pass
 
