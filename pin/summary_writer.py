@@ -143,6 +143,6 @@ class Metrics:
                 if len(self.metrics[key]):
                     self.writer.add_scalar(self.prefix + "_" + key, self.metrics[key][-1])
 
-    def __getattr__(self, item):
+    def __getitem__(self, item):
         return np.mean(self.metrics[item])
 
