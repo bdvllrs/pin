@@ -1,9 +1,9 @@
 from setuptools import find_packages, setup
 
 setup(name='pin',
-      version='0.0.5',
+      version='0.0.6',
       py_modules=['pin'],
-      install_requires=['sacred', 'Click'],
+      install_requires=['sacred', 'Click', 'omegaconf'],
       packages=find_packages(),
       package_data={'pin': ['templates/config/default/*',
                             'templates/*',
