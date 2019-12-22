@@ -1,0 +1,2 @@
+test: "@{vault:key1}"
+test2: "@{subfolder.subconfig1}"

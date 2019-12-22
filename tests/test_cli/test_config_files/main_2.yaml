@@ -1,0 +1,3 @@
+test: "@{vault:key1}"
+test2: "@{specific:key1}"
+test3: "@{vault:key2}"
