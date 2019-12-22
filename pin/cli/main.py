@@ -1,4 +1,6 @@
 import click
+
+from .config import config_group
 from .project import create
 from .sacred import omniboard
 from .scripts import script_group
@@ -18,6 +20,7 @@ def cli():
 
 
 cli.add_command(create)
+cli.add_command(config_group)
 cli.add_command(script_group)
 cli.add_command(omniboard)
 

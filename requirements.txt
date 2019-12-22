@@ -1,6 +1,7 @@
 torch
 sacred
 pyyaml
+ruamel.yaml
 munch
 pymongo
 numpy
