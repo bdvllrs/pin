@@ -83,9 +83,36 @@ They are python files with `.tpl` extension. You can access to the meta variable
 
 You can unse them by using `%SCRIPT_NAME%` in the file.
 
+### Initialize and fill missing configuration entries
+If some configuration files or values are missing, this
+will create them and ask you how to fill them.
+```
+pin config init
+``` 
+
 ## Some utils
 Attention. Non exhaustive documentation.
 
+
+### Configurations
+```python
+from pin.config import get_config
+
+config = get_config('config/main.yaml')
+```
+
+The `get_config` function uses [omegaconf](https://github.com/omry/omegaconf) in the backend.
+It adds the possibility to import values from other
+configuration files using the syntax:
+```yaml
+one_key: "@{a_config}"
+another_key: "@{another_config:a_key}"
+```
+In this example, the `one_key` will be replaced by the content
+of the `a_config.yaml` file and `another_key` will be replaced
+by the key `a_key` in the file `another_config`.
+
+You can use the dotted syntax for folders and nested keys: `@{folder1.folder2.config:key1.key2}`.
 
 ### Sacred
 I use sacred to log my experiments. The sacred functions are stored in:
