@@ -4,3 +4,4 @@ pyyaml
 munch
 pymongo
 numpy
+omegaconf

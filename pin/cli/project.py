@@ -38,15 +38,13 @@ def create(name, version):
 
     # create config
     os.mkdir(base_path / "config")
-    os.mkdir(base_path / "config/default")
-    copytree(PROJECT_DIR / "templates/config/default", base_path / "config/default")
+    copytree(PROJECT_DIR / "templates/config", base_path / "config")
 
     # create build folder
     os.mkdir(base_path / "build")
 
     # create setup file
     setup_content = load_template("setup.tpl", NAME=name, VERSION=version)
-
     with open(base_path / "setup.py", "w") as setup_file:
         setup_file.write(setup_content)
 
@@ -55,8 +53,11 @@ def create(name, version):
     os.mkdir(base_path / lib_name / "utils")
 
     constants_content = load_template("constants.tpl")
-
     with open(base_path / name / "utils/constants.py", "w") as constants_file:
         constants_file.write(constants_content)
+
+    git_ignore_content = load_template(".gitignore.tpl")
+    with open(base_path / ".gitignore", "w") as gitignore_file:
+        gitignore_file.write(git_ignore_content)
 
     click.echo(f"Project successfully created in {base_path}.")
