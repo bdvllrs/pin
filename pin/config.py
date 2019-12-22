@@ -51,7 +51,7 @@ def update_values(source_path, path, item, conf: config_type, sub_conf):
                 raise ValueError(f"{sub_conf} has a syntax error.")
             source = source.replace('.', '/') + '.yaml'
             imported = OmegaConf.load(str(source_path / source))
-            content = get_content_from_sub_var(imported, var, source)
+            content = get_content_from_sub_var(imported, var, source).strip()
             new_source_path = Path('/'.join(str(source_path / source).split('/')[:-1]))
             # Recursively import
             resolve_imports(new_source_path, source, content)

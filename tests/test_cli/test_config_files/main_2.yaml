@@ -1,2 +1,2 @@
 test: "@{vault:key1}"
-test2: "@{specific:key1}"
+test_missing_key: "@{specific:key1}"
