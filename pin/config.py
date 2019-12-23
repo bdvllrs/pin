@@ -7,13 +7,35 @@ from pathlib import Path
 config_type = Union[DictConfig, ListConfig]
 
 
-def get_content_from_sub_var(conf, var_path, path):
-    if not len(var_path):
+def load_config(path, imports=True):
+    """
+    Load configuration.
+    Args:
+        path: path to the configuration
+        imports: if imports should be resolved. Defaults to True.
+
+    Returns: OmegaConf
+    """
+    conf = OmegaConf.load(path)
+    if imports:
+        resolve_imports(path, conf)
+    return conf
+
+
+def get_nested_key_in_config(conf, keys):
+    """
+    Returns the value of a nested key from an OmegaConf conf.
+    Args:
+        conf: configuration
+        keys (list): nested key. For instance ['key1', 'key2'] will return conf['key1']['key2'].
+    Returns: the associated value.
+    """
+    if not len(keys):
         return conf
-    cur_var = var_path.pop(0)
+    cur_var = keys.pop(0)
     if cur_var in conf:
-        return get_content_from_sub_var(conf[cur_var], var_path, path)
-    raise ValueError(f"{cur_var} is not in the configuration {path}.")
+        return get_nested_key_in_config(conf[cur_var], keys)
+    raise ValueError(f"{cur_var} is not in the configuration.")
 
 
 def import_matches(conf):
@@ -30,11 +52,12 @@ def import_matches(conf):
         yield match
 
 
-def update_values(source_path, path, item, conf: config_type, sub_conf):
+def _update_values(source_path, path, item, conf: config_type, sub_conf):
     """
     Update a sub_conf str if contains an auto import line
     Args:
         source_path: source path
+        path:
         item: item (or index)
         conf: original configuration
         sub_conf: sub configuration
@@ -51,40 +74,35 @@ def update_values(source_path, path, item, conf: config_type, sub_conf):
                 raise ValueError(f"{sub_conf} has a syntax error.")
             source = source.replace('.', '/') + '.yaml'
             imported = OmegaConf.load(str(source_path / source))
-            content = get_content_from_sub_var(imported, var, source).strip()
-            new_source_path = Path('/'.join(str(source_path / source).split('/')[:-1]))
+            try:
+                content = get_nested_key_in_config(imported, var)
+            except ValueError:  # More specific error message with path of the config file.
+                raise ValueError(f"{'.'.join(var)} is not in {source}.")
             # Recursively import
-            resolve_imports(new_source_path, source, content)
+            resolve_imports(str(source_path / source), content)
             if isinstance(content, str):
                 # We just replace part of the string of the match
-                conf[item] = conf[item].replace(match.group(0), content)
+                conf[item] = conf[item].replace(match.group(0), content.strip())
             else:
                 conf[item] = content
     elif isinstance(sub_conf, (DictConfig, ListConfig)):
-        resolve_imports(source_path, path, sub_conf)
+        resolve_imports(path, sub_conf)
 
 
-def resolve_imports(source_path, path, conf: config_type):
+def resolve_imports(path, conf: config_type):
     """
     Replaces inplace auto imports in the conf
     Args:
-        source_path: path to the conf
-        conf: omegaconf
+        path:
+        conf: OmegaConf
     """
+    source_path = Path('/'.join(path.split('/')[:-1]))
     if isinstance(conf, DictConfig):
         for item, sub_conf in conf.items():
-            update_values(source_path, path, item, conf, sub_conf)
+            _update_values(source_path, path, item, conf, sub_conf)
     elif isinstance(conf, ListConfig):
         for item, sub_conf in enumerate(conf):
-            update_values(source_path, path, item, conf, sub_conf)
-
-
-def get_config(filename, imports=True):
-    source_path = Path('/'.join(filename.split('/')[:-1]))
-    conf = OmegaConf.load(filename)
-    if imports:
-        resolve_imports(source_path, filename, conf)
-    return conf
+            _update_values(source_path, path, item, conf, sub_conf)
 
 
 def configs_in(base_path):

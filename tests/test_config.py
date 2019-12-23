@@ -1,8 +1,8 @@
-from pin.config import get_config
+from pin.config import load_config
 
 
-def test_get_config():
-    config = get_config('test_cli/test_config_files/main.yaml')
+def test_load_config():
+    conf = load_config('test_cli/test_config_files/main.yaml')
 
-    assert config.test == "value1"
-    assert config.test2.item == "value"
+    assert conf.test == "value1"
+    assert conf.test2.item == "value"

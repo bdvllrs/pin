@@ -6,12 +6,14 @@ from click.testing import CliRunner
 
 from pin.cli.project import create
 from pin.cli.config import init_config
-from pin.config import get_config
+from pin.cli.utils import PROJECT_DIR
+from pin.config import load_config
 
 
 def get_test_configurations(config_file_path):
     config_contents = dict()
     for path in config_file_path:
+        path = os.path.join(PROJECT_DIR.parent, 'tests/test_cli', path)
         filename = path.split('/')[-1]
         with open(path, 'r') as file:
             config_contents[filename] = file.read()
@@ -44,18 +46,18 @@ def test_init_config():
 
         # The file specific.yaml is missing in the main_2.yaml file
         with pytest.raises(FileNotFoundError):
-            get_config('config/main_2.yaml')
+            load_config('config/main_2.yaml')
 
         # The entry key2 is missing in vault.yaml
         with pytest.raises(ValueError):
-            get_config('config/main_3.yaml')
+            load_config('config/main_3.yaml')
 
         # Start init config. This should create
         # The missing file and the missing keys.
         runner.invoke(init_config, input="Y\n value1\n value2")
         assert os.path.isfile('config/specific.yaml')
-        config_2 = get_config('config/main_2.yaml')
-        config_3 = get_config('config/main_3.yaml')
-        assert config_2.test_missing_key == "value1"
-        assert config_3.test_missing_key == "value2"
+        conf_2 = load_config('config/main_2.yaml')
+        conf_3 = load_config('config/main_3.yaml')
+        assert conf_2.test_missing_key == "value1"
+        assert conf_3.test_missing_key == "value2"
 

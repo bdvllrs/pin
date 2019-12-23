@@ -96,9 +96,9 @@ Attention. Non exhaustive documentation.
 
 ### Configurations
 ```python
-from pin.config import get_config
+from pin.config import load_config
 
-config = get_config('config/main.yaml')
+config = load_config('config/main.yaml')
 ```
 
 The `get_config` function uses [omegaconf](https://github.com/omry/omegaconf) in the backend.
