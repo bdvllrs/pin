@@ -1,10 +1,9 @@
 from pin.experiments import control_randomness
-from pin.sacred import init_and_get_experiment
+from pin.sacred import Experiment
 from %PROJECT_NAME%.utils.constants import PROJECT_DIR
 
-ex = init_and_get_experiment(exp_name="%SCRIPT_NAME%",
-                             project_directory=PROJECT_DIR,
-                             configs=["main.yaml"])
+ex = Experiment("%SCRIPT_NAME%", PROJECT_DIR,
+                configs=["main.yaml"])
 
 
 @ex.automain
