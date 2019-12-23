@@ -120,22 +120,26 @@ I use sacred to log my experiments. The sacred functions are stored in:
 import pin.sacred
 ```
 
-#### `init_and_get_experiment`
+#### Experiment
+`pin` updates the sacred `Experiment` object to add
+debug options and automatically set MongoDB observers from
+the `config/sacred.yaml` file.
+
 ```python
-ex = init_and_get_experiment(
-        exp_name="EXPERIMENT_NAME",
-        project_directory="/path/to/project/working/directory",
-        ingredients=[],  # list of ingredients to load
-        configs=[],  # list of config names to load from the config folder
-        debug_mode=DEBUG,  # if True, no observer is added
-        interactive=False  # if interactive session
-    )
+from pin.sacred import Experiment
+
+
+ex = Experiment("EXPERIMENT_NAME",
+                "/path/to/project/working/directory",  # path to project directory
+                ingredients=[],  # list of ingredients to load
+                configs=[],  # list of config names to load from the config folder
+                interactive=False)  # if interactive session
 ```
 This initializes the experiment and loads config from the config folder
 according to the wanted config names provided in the `configs` parameter.
 
-It will try to load the config in the `config` folder. If it does not exist, 
-it will load the file in the `config/default`.
+It uses the `pin.config.load_config` function.
+
 
 #### `@munchify`
 Changes all dictionary provided by sacred into [Munch](https://github.com/Infinidat/munch) objects.
