@@ -1,4 +1,5 @@
 import inspect
+import sys
 from pathlib import Path
 
 from munch import Munch
@@ -8,8 +9,8 @@ from sacred.observers import FileStorageObserver
 from sacred.observers import MongoObserver
 from sacred.utils import apply_backspaces_and_linefeeds
 
-from ..config import load_config
-from ..constants import DEBUG
+from pin.config import load_config, update_argv_from_arguments
+from pin.constants import DEBUG
 
 dict_types = [dict, ReadOnlyDict]
 
@@ -81,10 +82,16 @@ class Experiment(SacredExperiment):
             print("Added File Storage Observer in", sacred_conf['sacred']['file_storage']['path'])
 
         for file in configs:
-            self.add_config(load_config(project_directory / "config" / file))
+            path = project_directory / "config" / file
+            config = load_config(path)
+            update_argv_from_arguments(sys.argv, config, path)
+            self.add_config(config)
 
         if debug_mode:
-            self.add_config(load_config(project_directory / "config/debug.yaml"))
+            path = project_directory / "config/debug.yaml"
+            config = load_config(path)
+            update_argv_from_arguments(sys.argv, config, path)
+            self.add_config(config)
 
 
 def munchify(function):

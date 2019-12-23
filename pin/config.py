@@ -39,6 +39,15 @@ def get_nested_key_in_config(conf, keys):
     raise ValueError(f"{cur_var} is not in the configuration.")
 
 
+def update_dict_from_nested_key(config, nested_key, value):
+    if not len(nested_key):
+        return
+    if len(nested_key) == 1:
+        config[nested_key[0]] = value
+    key = nested_key.pop(0)
+    update_argv_from_arguments(config[key], nested_key, value)
+
+
 def import_matches(conf):
     """
     Yields all regex matches of imports in a given config str.
@@ -143,3 +152,17 @@ def configs_in(base_path):
             path = os.path.join(dir_path, file)
             with open(path, 'r') as config_file:
                 yield path, config_file.read()
+
+
+def update_argv_from_arguments(args, conf, path):
+    source_path = Path('/'.join(path.split('/')[:-1]))
+    conf = conf.copy()
+    # Check that its a sacred valid cli input
+    if len(args) > 1 and args[1] == 'with':
+        for k, arg in enumerate(args[2:], 2):
+            for match in re.finditer(r"'?([^']*)\s?=\s?([^']*)'?", arg):
+                if match.group(1) is not None and match.group(2) is not None:
+                    item, value = match.group(1), match.group(2)
+                    update_dict_from_nested_key(conf, item.split('.'), value)
+                    _update_values(source_path, path, item, conf, value)
+                    args[k] = f"'{item}={conf[item]}'"

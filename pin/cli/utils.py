@@ -4,7 +4,7 @@ from pathlib import Path
 
 import click
 
-from pin.sacred.utils import get_sacred_conf
+from pin.sacred import get_sacred_conf
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
