@@ -36,11 +36,11 @@ A new project with the structure
 ```
 PROJECT_NAME/
     PROJECT_NAME/
-        ...
+        # Your library here
     config/
-        default/
     builds/
     setup.py
+    .gitignore
 ```
 
 will be created.
