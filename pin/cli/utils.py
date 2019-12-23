@@ -56,7 +56,7 @@ PROJECT_DIR = Path(__file__).resolve().parents[1]
 
 
 def splash_screen():
-    return """ _______  _____  ____  _____  
+    return r""" _______  _____  ____  _____  
 |_   __ \|_   _||_   \|_   _| 
   | |__) | | |    |   \ | |   
   |  ___/  | |    | |\ \| |   
