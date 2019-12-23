@@ -42,7 +42,7 @@ def test_init_config():
         shutil.rmtree('config')
         os.mkdir('config')
         fill_config_folder('config', config_contents)
-        assert os.listdir('config') == ['main_2.yaml', 'main_3.yaml', 'vault.yaml']
+        assert sorted(os.listdir('config')) == ['main_2.yaml', 'main_3.yaml', 'vault.yaml']
 
         # The file specific.yaml is missing in the main_2.yaml file
         with pytest.raises(FileNotFoundError):
