@@ -6,3 +6,4 @@ def test_load_config():
 
     assert conf.test == "value1"
     assert conf.test2.item == "value"
+    assert conf.order.specific == "b"
