@@ -85,6 +85,8 @@ class Experiment(SacredExperiment):
             path = str(project_directory / "config" / file)
             config = load_config(path)
             update_argv_from_arguments(sys.argv, config, path)
+            # FIXME: what if the config is a ListConf?
+            #  Same for the next one.
             self.add_config(dict(config))
 
         if debug_mode:
