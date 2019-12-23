@@ -1,2 +1,10 @@
 # Here goes all keys that are specific to this instance of the project
 # You can add file locations, specific values of some configuration, ...
+
+sacred:
+  mongo_db:
+    db_name: db_name
+    url: 127.0.0.1:27017
+
+  file_storage:
+    path: /path/to/storage

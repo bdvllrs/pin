@@ -111,5 +111,4 @@ builds/
 # Ignore project instance specific items.
 config/vault.yaml
 config/specific.yaml
-config/sacred.yaml
 
