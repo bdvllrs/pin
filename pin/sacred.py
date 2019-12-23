@@ -85,13 +85,13 @@ class Experiment(SacredExperiment):
             path = str(project_directory / "config" / file)
             config = load_config(path)
             update_argv_from_arguments(sys.argv, config, path)
-            self.add_config(config)
+            self.add_config(dict(config))
 
         if debug_mode:
             path = str(project_directory / "config/debug.yaml")
             config = load_config(path)
             update_argv_from_arguments(sys.argv, config, path)
-            self.add_config(config)
+            self.add_config(dict(config))
 
 
 def munchify(function):
