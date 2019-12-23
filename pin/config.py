@@ -123,10 +123,10 @@ def get_keys_to_resolve(conf, prefix=None):
     items = []
     for item, sub_conf in conf.items():
         new_prefix = prefix + [item]
-        if isinstance(sub_conf, str):
-            items.append(".".join(new_prefix))
-        else:
+        if isinstance(sub_conf, DictConfig):
             items.extend(get_keys_to_resolve(sub_conf, new_prefix))
+        else:
+            items.append(".".join(new_prefix))
     return items
 
 
