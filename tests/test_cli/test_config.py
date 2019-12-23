@@ -54,7 +54,7 @@ def test_init_config():
 
         # Start init config. This should create
         # The missing file and the missing keys.
-        runner.invoke(init_config, input="Y\n value1\n value2")
+        runner.invoke(init_config, input="Y\nvalue1\nvalue2")
         assert os.path.isfile('config/specific.yaml')
         conf_2 = load_config('config/main_2.yaml')
         conf_3 = load_config('config/main_3.yaml')
