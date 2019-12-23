@@ -1,8 +1,9 @@
 import os
-from typing import Union
 import re
-from omegaconf import OmegaConf, DictConfig, ListConfig
 from pathlib import Path
+from typing import Union
+
+from omegaconf import OmegaConf, DictConfig, ListConfig
 
 config_type = Union[DictConfig, ListConfig]
 
@@ -74,12 +75,12 @@ def _update_values(source_path, path, item, conf: config_type, sub_conf):
                 raise ValueError(f"{sub_conf} has a syntax error.")
             source = source.replace('.', '/') + '.yaml'
             imported = OmegaConf.load(str(source_path / source))
+            resolve_imports(str(source_path / source), imported)
             try:
                 content = get_nested_key_in_config(imported, var)
             except ValueError:  # More specific error message with path of the config file.
                 raise ValueError(f"{'.'.join(var)} is not in {source}.")
             # Recursively import
-            resolve_imports(str(source_path / source), content)
             if isinstance(content, str):
                 # We just replace part of the string of the match
                 conf[item] = conf[item].replace(match.group(0), content.strip())
@@ -97,12 +98,37 @@ def resolve_imports(path, conf: config_type):
         conf: OmegaConf
     """
     source_path = Path('/'.join(path.split('/')[:-1]))
+    original_conf = conf.copy()
     if isinstance(conf, DictConfig):
-        for item, sub_conf in conf.items():
-            _update_values(source_path, path, item, conf, sub_conf)
+        for item in resolve_order(original_conf):
+            first_index = item.split('.')[0]
+            _update_values(source_path, path, first_index, conf, conf[first_index])
     elif isinstance(conf, ListConfig):
-        for item, sub_conf in enumerate(conf):
+        for item, sub_conf in enumerate(original_conf):
             _update_values(source_path, path, item, conf, sub_conf)
+
+
+def get_keys_to_resolve(conf, prefix=None):
+    if prefix is None:
+        prefix = []
+    items = []
+    for item, sub_conf in conf.items():
+        new_prefix = prefix + [item]
+        if isinstance(sub_conf, str):
+            items.append(".".join(new_prefix))
+        else:
+            items.extend(get_keys_to_resolve(sub_conf, new_prefix))
+    return items
+
+
+def resolve_order(conf):
+    """
+    Yields the order to resolve the imports
+    Args:
+        conf:
+    """
+    keys = list(get_keys_to_resolve(conf))
+    return sorted(keys, key=lambda x: len(x.split('.')))
 
 
 def configs_in(base_path):
@@ -114,6 +140,6 @@ def configs_in(base_path):
     """
     for dir_path, dir_names, file_names in os.walk(base_path):
         for file in file_names:
-            path =  os.path.join(dir_path, file)
+            path = os.path.join(dir_path, file)
             with open(path, 'r') as config_file:
                 yield path, config_file.read()
