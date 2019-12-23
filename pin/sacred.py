@@ -82,13 +82,13 @@ class Experiment(SacredExperiment):
             print("Added File Storage Observer in", sacred_conf['sacred']['file_storage']['path'])
 
         for file in configs:
-            path = project_directory / "config" / file
+            path = str(project_directory / "config" / file)
             config = load_config(path)
             update_argv_from_arguments(sys.argv, config, path)
             self.add_config(config)
 
         if debug_mode:
-            path = project_directory / "config/debug.yaml"
+            path = str(project_directory / "config/debug.yaml")
             config = load_config(path)
             update_argv_from_arguments(sys.argv, config, path)
             self.add_config(config)
