@@ -33,7 +33,7 @@ def add_dir_sources(experiment, path, allowed_exts=None):
 
 
 def get_sacred_conf(config_root):
-    sacred_conf = load_config(config_root / "config/sacred.yaml")
+    sacred_conf = load_config(str(config_root / "config/sacred.yaml"))
     if 'sacred' not in sacred_conf:
         return None
     return sacred_conf
