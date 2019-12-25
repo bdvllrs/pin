@@ -5,4 +5,4 @@ ruamel.yaml
 munch
 pymongo
 numpy
-omegaconf
+omegaconf==1.4.1

@@ -40,9 +40,6 @@ def create(name, version):
     os.mkdir(base_path / "config")
     copytree(PROJECT_DIR / "templates/config", base_path / "config")
 
-    # create build folder
-    os.mkdir(base_path / "build")
-
     # create setup file
     setup_content = load_template("setup.tpl", NAME=name, VERSION=version)
     with open(base_path / "setup.py", "w") as setup_file:
