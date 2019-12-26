@@ -1,3 +1,4 @@
+torch
 sacred
 pyyaml
 ruamel.yaml
