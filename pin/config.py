@@ -147,7 +147,7 @@ def configs_in(base_path):
         base_path:
     Yields: configuration contents
     """
-    for dir_path, dir_names, file_names in os.walk(base_path):
+    for dir_path, dir_names, file_names in sorted(list(os.walk(base_path))):
         for file in file_names:
             path = os.path.join(dir_path, file)
             with open(path, 'r') as config_file:
