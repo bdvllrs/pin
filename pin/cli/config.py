@@ -35,11 +35,14 @@ def config_group():
 
 
 @config_group.command("init", help="Initialize empty configurations.")
-def init_config():
+@click.option("--yes", "-y", is_flag=True, default=False)
+@click.option("-v", "values", multiple=True)
+def init_config(yes, values):
     """
     Analysis missing configuration values, creates and fills
      missing configuration files
     """
+    values = list(values)
     yaml = YAML()
     yaml.preserve_quotes = True
 
@@ -56,7 +59,7 @@ def init_config():
             target_file_name = str(import_path)[len_conf_base:]
             # Look if file does not exists. And ask to create it.
             if not import_path.exists():
-                if click.confirm(f"The configuration file `{target_file_name}` "
+                if yes or click.confirm(f"The configuration file `{target_file_name}` "
                                  "does not exist. Do you want to create it?",
                                  default=True):
                     with open(import_path, 'w') as f:
@@ -70,9 +73,12 @@ def init_config():
                     yaml_content = dict()
 
                 if not is_dotted_key_in_dict(import_var, yaml_content):
-                    prompted_val = click.prompt(f"The configuration file `{target_file_name}` "
-                                                f"is missing the key `{match.group(3).strip()}`. "
-                                                "Fill it with")
+                    if len(values):
+                        prompted_val = values.pop(0)
+                    else:
+                        prompted_val = click.prompt(f"The configuration file `{target_file_name}` "
+                                                    f"is missing the key `{match.group(3).strip()}`. "
+                                                    "Fill it with")
                     # TODO: We assume that each config file is a dict yaml.
                     #  To be adapted for list configs.
                     sub_dict = make_dict_from_dot_path(import_var, prompted_val)
