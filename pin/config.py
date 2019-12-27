@@ -147,8 +147,8 @@ def configs_in(base_path):
         base_path:
     Yields: configuration contents
     """
-    for dir_path, dir_names, file_names in sorted(list(os.walk(base_path)), key=lambda x: x[2]):
-        for file in file_names:
+    for dir_path, dir_names, file_names in sorted(os.walk(base_path), key=lambda x: x[0]):
+        for file in sorted(file_names):
             path = os.path.join(dir_path, file)
             with open(path, 'r') as config_file:
                 yield path, config_file.read()
