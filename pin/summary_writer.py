@@ -107,12 +107,13 @@ class Metrics:
         self.current_step = 0
         self.epoch += 1
 
-    def step(self, content_dict=None):
+    def step(self, content_dict=None, force_print=False):
         """
         Call step every at the end of every iteration. Will print or log if
         the step % print_every is 1.
         Args:
             content_dict: Some additional metrics to add before logging.
+            force_print: if print is False, will only print every self.print_every iterations. Otherwise will print now.
         """
         if content_dict is None:
             content_dict = dict()
@@ -121,7 +122,7 @@ class Metrics:
 
         self.current_step += 1
 
-        if not self.current_step % self.print_every:
+        if force_print or not self.current_step % self.print_every:
             self.compute_average()
             self.print()
 
