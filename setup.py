@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(name='pin',
-      version='0.0.6',
+      version='0.0.7',
       py_modules=['pin'],
       install_requires=['sacred', 'Click', 'omegaconf==1.4.1', 'ruamel.yaml'],
       packages=find_packages(),
