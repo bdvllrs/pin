@@ -6,7 +6,7 @@ from munch import Munch
 from sacred import Experiment as SacredExperiment, SETTINGS
 from sacred.config.custom_containers import ReadOnlyDict
 from sacred.observers import FileStorageObserver
-from sacred.observers import MongoObserver
+from sacred.observers import QueuedMongoObserver
 from sacred.utils import apply_backspaces_and_linefeeds
 
 from pin.config import load_config, update_argv_from_arguments
@@ -69,8 +69,11 @@ class Experiment(SacredExperiment):
 
         # Add observers
         # Mongo DB
-        if not debug_mode and sacred_conf['sacred']['observer'] == "mongodb":
-            observer = MongoObserver(sacred_conf['sacred']['mongodb']['url'],
+        observers = sacred_conf['sacred']['observer']
+        if type(observers) == str:
+            observers = [observers]
+        if not debug_mode and  "mongodb" in observers:
+            observer = QueuedMongoObserver(sacred_conf['sacred']['mongodb']['url'],
                                      sacred_conf['sacred']['mongodb']['db_name'])
             self.observers.append(observer)
             print("Added MongoDB Observer,", sacred_conf['sacred']['mongodb'])
