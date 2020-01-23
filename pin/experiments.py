@@ -10,8 +10,7 @@ def control_randomness(seed, libs=None):
         libs: list of libs to set the seed. By default, Torch and TensorFlow.
           The Numpy and random seeds are always set, regardless of the value of libs.
     """
-    if libs is None:
-        libs = ["torch", "tensorflow"]
+    libs = libs or ["torch", "tensorflow"]
 
     random.seed(seed)
     # NUMPY
@@ -35,20 +34,17 @@ def control_randomness(seed, libs=None):
             pass
 
     if "tensorflow" in libs:
-        # TENSORFLOW 1
         try:
             import tensorflow as tf
-            tf.compat.v1.set_random_seed(seed)
+            tf_version = tf.__version__.split('.')
+            if tf_version[0] == '1':
+                # TENSORFLOW 1
+                tf.compat.v1.set_random_seed(seed)
+            elif tf_version[0] == '2':
+                # TENSORFLOW 2
+                tf.random.set_seed(seed)
         except:
             pass
-
-        # TENSORFLOW 2
-        try:
-            import tensorflow as tf
-            tf.random.set_seed(seed)
-        except:
-            pass
-
 
 def set_cuda_device(device_number):
     """
