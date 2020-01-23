@@ -8,18 +8,22 @@ from omegaconf import OmegaConf, DictConfig, ListConfig
 config_type = Union[DictConfig, ListConfig]
 
 
-def load_config(path, imports=True):
+def load_config(path, imports=True, to_container=False):
     """
     Load configuration.
     Args:
         path: path to the configuration
         imports: if imports should be resolved. Defaults to True.
+        to_container: if True will return a dict or list according to the config type. Otherwise
+          will return the omegaconf object.
 
     Returns: OmegaConf
     """
     conf = OmegaConf.load(path)
     if imports:
         resolve_imports(path, conf)
+    if to_container:
+        return OmegaConf.to_container(conf, resolve=True)
     return conf
 
 

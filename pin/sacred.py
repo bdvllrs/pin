@@ -86,17 +86,17 @@ class Experiment(SacredExperiment):
 
         for file in configs:
             path = str(project_directory / "config" / file)
-            config = load_config(path)
+            config = load_config(path, to_container=True)
             update_argv_from_arguments(sys.argv, config, path)
             # FIXME: what if the config is a ListConf?
             #  Same for the next one.
-            self.add_config(dict(config))
+            self.add_config(config)
 
         if debug_mode:
             path = str(project_directory / "config/debug.yaml")
-            config = load_config(path)
+            config = load_config(path, to_container=True)
             update_argv_from_arguments(sys.argv, config, path)
-            self.add_config(dict(config))
+            self.add_config(config)
 
 
 def munchify(function):
