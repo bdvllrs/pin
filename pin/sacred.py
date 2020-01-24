@@ -79,7 +79,7 @@ class Experiment(SacredExperiment):
             print("Added MongoDB Observer,", sacred_conf['sacred']['mongodb'])
 
         # File Storage
-        elif not debug_mode and sacred_conf['sacred']['observer'] == "file_storage":
+        elif not debug_mode and "file_storage" in observers:
             observer = FileStorageObserver(sacred_conf['sacred']['file_storage']['path'])
             self.observers.append(observer)
             print("Added File Storage Observer in", sacred_conf['sacred']['file_storage']['path'])
