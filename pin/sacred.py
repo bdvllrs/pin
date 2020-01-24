@@ -73,8 +73,8 @@ class Experiment(SacredExperiment):
         if type(observers) == str:
             observers = [observers]
         if not debug_mode and  "mongodb" in observers:
-            observer = QueuedMongoObserver(sacred_conf['sacred']['mongodb']['url'],
-                                     sacred_conf['sacred']['mongodb']['db_name'])
+            observer = QueuedMongoObserver(url=sacred_conf['sacred']['mongodb']['url'],
+                                           db_name=sacred_conf['sacred']['mongodb']['db_name'])
             self.observers.append(observer)
             print("Added MongoDB Observer,", sacred_conf['sacred']['mongodb'])
 
