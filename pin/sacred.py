@@ -42,7 +42,8 @@ def get_sacred_conf(config_root):
 class Experiment(SacredExperiment):
     def __init__(self, exp_name, project_directory, ingredients=None,
                  configs=None, debug_mode=None,
-                 interactive=False):
+                 interactive=False,
+                 source_dir=None):
         """
         Initialize sacred configs and get the experiment object
         Args:
@@ -59,7 +60,9 @@ class Experiment(SacredExperiment):
         ingredients = ingredients if ingredients is not None else []
         super().__init__(exp_name, ingredients=ingredients, interactive=interactive)
 
-        add_dir_sources(self, project_directory)
+        self.project_directory = project_directory
+        if source_dir:
+            self.add_source_dir(source_dir)
 
         sacred_conf = get_sacred_conf(project_directory)
         if sacred_conf is None:
@@ -72,15 +75,15 @@ class Experiment(SacredExperiment):
         observers = sacred_conf['sacred']['observer']
         if type(observers) == str:
             observers = [observers]
-        if not debug_mode and  "mongodb" in observers:
+        if not debug_mode and "mongodb" in observers:
             observer = QueuedMongoObserver(url=sacred_conf['sacred']['mongodb']['url'],
                                            db_name=sacred_conf['sacred']['mongodb']['db_name'])
             self.observers.append(observer)
             print("Added MongoDB Observer,", sacred_conf['sacred']['mongodb'])
 
         # File Storage
-        elif not debug_mode and "file_storage" in observers:
-            observer = FileStorageObserver(sacred_conf['sacred']['file_storage']['path'])
+        if not debug_mode and "file_storage" in observers:
+            observer = FileStorageObserver(project_directory / sacred_conf['sacred']['file_storage']['path'])
             self.observers.append(observer)
             print("Added File Storage Observer in", sacred_conf['sacred']['file_storage']['path'])
 
@@ -97,6 +100,14 @@ class Experiment(SacredExperiment):
             config = load_config(path, to_container=True)
             update_argv_from_arguments(sys.argv, config, path)
             self.add_config(config)
+
+    def add_source_dir(self, source_dir):
+        if type(source_dir) not in [list, tuple]:
+            source_dir = [source_dir]
+        for source in source_dir:
+            add_dir_sources(self, self.project_directory / source)
+        return self
+
 
 
 def munchify(function):

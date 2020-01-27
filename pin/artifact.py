@@ -1,8 +1,6 @@
 import os
-
-import torch
-from typing import Union
 from pathlib import Path
+from typing import Union
 
 path_type = Union[Path, str]
 
@@ -11,6 +9,7 @@ class Artifact:
     """"
     Base class for artifacts.
     """
+
     def __init__(self, path: path_type, name: str,
                  num_kept_versions: int = 10,
                  debug: bool = False):
@@ -123,8 +122,25 @@ class Artifact:
 
 
 class TorchModelArtifact(Artifact):
+    @staticmethod
+    def _get_state_dict(item):
+        try:
+            state_dict = item.state_dict()
+        except AttributeError:
+            state_dict = item
+        return state_dict
+
     def save(self, filename, **kwargs):
-        torch.save(self.artifact, filename)
+        import torch
+
+        artifact = self.artifact
+        if type(artifact) != dict:
+            saved_artifact = self._get_state_dict(artifact)
+        else:
+            saved_artifact = dict()
+            for key, item in artifact.items():
+                saved_artifact[key] = self._get_state_dict(item)
+        torch.save(saved_artifact, filename)
 
     def load(self, models, version="best"):
         """
@@ -136,6 +152,8 @@ class TorchModelArtifact(Artifact):
         Returns: dicts of loaded models
 
         """
+        import torch
+
         file_name = self.path / self.name.format(version=version)
         loaded_dicts = torch.load(file_name)
         is_not_dict = type(models) is not dict and type(loaded_dicts) is not dict
