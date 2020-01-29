@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import Union
+import re
 
 path_type = Union[Path, str]
 
@@ -114,7 +115,31 @@ class Artifact:
         """
         raise NotImplementedError
 
+    def resume(self, *params, use_recovery=True):
+        """
+        Same as load, but infers the version to load by taking either the recovery model if it exists, or the latest
+         model version.
+        Args:
+            *params:
+            use_recovery: if False, will not try to use the recovery model. Defaults to True
+
+        Returns:
+
+        """
+        models = os.listdir(self.path)
+        if use_recovery and self.name.format(version="recovery") in models:
+            return self.load(*params, version="recovery")
+        latest_model = 1
+        for model in models:
+            match = re.match(self.name.format(version="([0-9]+)"), model)
+            model_version = match.group(1)
+            if model_version.isdigit() and latest_model < int(model_version):
+                latest_model = int(model_version)
+        return self.load(*params, version=str(latest_model))
+
     def clean(self):
+        if os.path.isfile():
+            os.remove(self.path / self.name.format("recovery"))
         to_remove = sorted(self.saved_versions.keys())[:len(self.saved_versions.keys()) - self.num_kept_versions]
         for index in to_remove:
             os.remove(self.saved_versions[index])
@@ -124,9 +149,9 @@ class Artifact:
 class TorchModelArtifact(Artifact):
     @staticmethod
     def _get_state_dict(item):
-        try:
+        if hasattr(item, "state_dict"):
             state_dict = item.state_dict()
-        except AttributeError:
+        else:
             state_dict = item
         return state_dict
 
@@ -162,7 +187,10 @@ class TorchModelArtifact(Artifact):
             loaded_dicts = dict(default=loaded_dicts)
         for key, model in models.items():
             if key in loaded_dicts.keys():
-                model.load_state_dict(loaded_dicts[key])
+                if hasattr(model, "load_state_dict"):
+                    model.load_state_dict(loaded_dicts[key])
+                else:
+                    models[key] = loaded_dicts[key]
             else:
                 print(f"{key} is not in the checkpoint. Skipping.")
         return models["default"] if is_not_dict else models
