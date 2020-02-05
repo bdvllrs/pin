@@ -142,7 +142,7 @@ class Metrics:
         if self.writer is not None:
             for key in self.metrics.keys():
                 if len(self.metrics[key]):
-                    self.writer.add_scalar(self.prefix + "_" + key, self.metrics[key][-1])
+                    self.writer.add_scalar(self.prefix + "_" + key, self.running_avg[key][-1])
 
     def __getitem__(self, item):
         return np.mean(self.metrics[item])
