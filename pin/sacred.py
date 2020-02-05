@@ -5,8 +5,7 @@ from pathlib import Path
 from munch import Munch
 from sacred import Experiment as SacredExperiment, SETTINGS
 from sacred.config.custom_containers import ReadOnlyDict
-from sacred.observers import FileStorageObserver
-from sacred.observers import QueuedMongoObserver
+from sacred.observers import FileStorageObserver, MongoObserver
 from sacred.utils import apply_backspaces_and_linefeeds
 
 from pin.config import load_config, update_argv_from_arguments
@@ -76,8 +75,8 @@ class Experiment(SacredExperiment):
         if type(observers) == str:
             observers = [observers]
         if not debug_mode and "mongodb" in observers:
-            observer = QueuedMongoObserver(url=sacred_conf['sacred']['mongodb']['url'],
-                                           db_name=sacred_conf['sacred']['mongodb']['db_name'])
+            observer = MongoObserver(url=sacred_conf['sacred']['mongodb']['url'],
+                                     db_name=sacred_conf['sacred']['mongodb']['db_name'])
             self.observers.append(observer)
             print("Added MongoDB Observer,", sacred_conf['sacred']['mongodb'])
 
@@ -107,7 +106,6 @@ class Experiment(SacredExperiment):
         for source in source_dir:
             add_dir_sources(self, self.project_directory / source)
         return self
-
 
 
 def munchify(function):

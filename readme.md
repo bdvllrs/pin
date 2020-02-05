@@ -165,14 +165,6 @@ from pin import DEBUG
 The `DEBUG` constant indicates if a `PIN_DEBUG` environment variable has been set to `1`.
 This is useful to know when to add observers in a sacred experiment.
 
-### Function for experiments
-```python
-from pin import control_randomness, set_cuda_device
-```
-
-- `control_randomness(seed)` sets the seed to the packages: random, numpy, torch, tensorflow.
-- `set_cuda_device(device_number)` configures the environment variables `CUDA_DEVICE_ORDER` and `CUDA_VISIBLE_DEVICES`.
-
 ### Metrics and Writers
 ```python
 from pin import SummaryWriter, Metrics

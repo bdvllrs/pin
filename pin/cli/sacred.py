@@ -25,5 +25,7 @@ def omniboard(mongo, database):
     try:
         click.echo(f"> omniboard -m {mongo}:{database_name}")
         call(["omniboard", "-m", f"{mongo}:{database_name}"])
+    except KeyboardInterrupt:
+        click.ClickException(f"Stopping.")
     except:
-        raise click.ClickException(f"Could not start omniboard. Is it properly configured?")
+        raise click.ClickException(f"pin could not start omniboard. Is it properly configured?")

@@ -9,10 +9,7 @@ ex = Experiment("%SCRIPT_NAME%", PROJECT_DIR,
 
 
 @ex.automain
-def %SCRIPT_NAME%(_run, _seed, _log, cuda):
-    # Set randomness
-    control_randomness(_seed)
-
+def %SCRIPT_NAME%(_run, _log, cuda):
     device = torch.device('cpu')
     if cuda and torch.cuda.is_available():
         print("Using CUDA.")

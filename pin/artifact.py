@@ -132,14 +132,15 @@ class Artifact:
         latest_model = 1
         for model in models:
             match = re.match(self.name.format(version="([0-9]+)"), model)
-            model_version = match.group(1)
-            if model_version.isdigit() and latest_model < int(model_version):
-                latest_model = int(model_version)
+            if match:
+                model_version = match.group(1)
+                if model_version.isdigit() and latest_model < int(model_version):
+                    latest_model = int(model_version)
         return self.load(*params, version=str(latest_model))
 
     def clean(self):
-        if os.path.isfile():
-            os.remove(self.path / self.name.format("recovery"))
+        if os.path.isfile(self.path / self.name.format(version="recovery")):
+            os.remove(self.path / self.name.format(version="recovery"))
         to_remove = sorted(self.saved_versions.keys())[:len(self.saved_versions.keys()) - self.num_kept_versions]
         for index in to_remove:
             os.remove(self.saved_versions[index])

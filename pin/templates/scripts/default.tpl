@@ -8,8 +8,5 @@ ex = Experiment("%SCRIPT_NAME%", PROJECT_DIR,
 
 
 @ex.automain
-def %SCRIPT_NAME%(_run, _seed, _log):
-    # Set randomness
-    control_randomness(_seed)
-
+def %SCRIPT_NAME%(_run, _log):
     # TODO
