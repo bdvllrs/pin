@@ -27,7 +27,7 @@ class Artifact:
         self.version = 1
         self.best_version = None
         self.best_version_value = None
-        self.artifact = None
+        self.artifact = dict()
         self.num_kept_versions = num_kept_versions
         self.debug = debug
 
@@ -42,7 +42,7 @@ class Artifact:
         Returns:
 
         """
-        self.artifact = artifact
+        self.artifact.update(artifact)
 
     def __enter__(self):
         """
