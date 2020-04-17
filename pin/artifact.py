@@ -195,8 +195,10 @@ class TorchModelArtifact(Artifact):
                 if hasattr(model, "load_state_dict"):
                     if isinstance(model, torch.nn.DataParallel):
                         model.module.load_state_dict(loaded_dicts[key], **kwargs)
-                    else:
+                    elif isinstance(model, torch.nn.Module):
                         model.load_state_dict(loaded_dicts[key], **kwargs)
+                    else:
+                        model.load_state_dict(loaded_dicts[key])
                 else:
                     models[key] = loaded_dicts[key]
             else:
