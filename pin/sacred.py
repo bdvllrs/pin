@@ -82,7 +82,7 @@ class Experiment(SacredExperiment):
 
         # File Storage
         if not debug_mode and "file_storage" in observers:
-            observer = FileStorageObserver(project_directory / sacred_conf['sacred']['file_storage']['path'])
+            observer = FileStorageObserver(sacred_conf['sacred']['file_storage']['path'])
             self.observers.append(observer)
             print("Added File Storage Observer in", sacred_conf['sacred']['file_storage']['path'])
 
