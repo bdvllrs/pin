@@ -7,14 +7,15 @@ class SummaryWriter:
     API follows the tensorboard SummaryWriter API with only a subset of the functions available.
     """
 
-    def __init__(self, tensorboard_writer=None, sacred_run=None):
+    def __init__(self, tensorboard_writer=None, sacred_run=None, no_op=False):
         """
         Args:
             tensorboard_writer:
             sacred_run: _run variable from sacred
+            no_op: if True, acts as no op.
         """
-        self.tensorboard_writer = tensorboard_writer
-        self.sacred_writer = sacred_run
+        self.tensorboard_writer = None if no_op else tensorboard_writer
+        self.sacred_writer = None if no_op else sacred_run
 
     def __enter__(self):
         return self
