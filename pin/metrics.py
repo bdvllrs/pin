@@ -6,7 +6,7 @@ class Metrics:
     Handle metrics, computes averages, log in Summary writer and print in console.
     """
 
-    def __init__(self, writer=None, print_every=50, first_epoch=0, prefix=None, no_op=false):
+    def __init__(self, writer=None, print_every=50, first_epoch=0, prefix=None, no_op=False):
         """
         Args:
             writer: SummaryWriter object if want to log in Tensorboard.
